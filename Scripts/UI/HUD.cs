@@ -19,7 +19,7 @@ public partial class HUD : CanvasLayer
 	public void SetMaxHealth(int maxHealth)
 	{
 		_maxHealth = maxHealth;
-		_healthBar.MaxValue = _maxHealth;і
+		_healthBar.MaxValue = _maxHealth;
 		UpdateHealthDisplay();
 	}
 
