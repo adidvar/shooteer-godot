@@ -1,0 +1,67 @@
+[gd_scene format=3 uid="uid://cxab3x2y"]
+
+[ext_resource type="Theme" uid="uid://c7x80a00a1b2c" path="res://Themes/MainTheme.tres" id="1_theme"]
+[ext_resource type="Script" uid="uid://dml6nt0djum85" path="res://Scripts/UI/MainMenu.cs" id="1_xxx"]
+
+[node name="MainMenu" type="Control" unique_id=2010916153]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_theme")
+script = ExtResource("1_xxx")
+
+[node name="Background" type="ColorRect" parent="." unique_id=1193353677]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0901961, 0.0901961, 0.117647, 1)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1020673089]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -100.0
+offset_right = 150.0
+offset_bottom = 100.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 15
+
+[node name="Label" type="Label" parent="VBoxContainer" unique_id=2095103387]
+layout_mode = 2
+theme_override_font_sizes/font_size = 42
+text = "SHOOTER"
+horizontal_alignment = 1
+
+[node name="Spacer" type="Control" parent="VBoxContainer" unique_id=1675147952]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="IPLineEdit" type="LineEdit" parent="VBoxContainer" unique_id=365625677]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+placeholder_text = "Enter IP Address"
+alignment = 1
+
+[node name="HostButton" type="Button" parent="VBoxContainer" unique_id=1298537344]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+text = "Host"
+
+[node name="JoinButton" type="Button" parent="VBoxContainer" unique_id=1104388431]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+text = "Join"
+
+[connection signal="pressed" from="VBoxContainer/HostButton" to="." method="OnHostButtonPressed"]
+[connection signal="pressed" from="VBoxContainer/JoinButton" to="." method="OnJoinButtonPressed"]

@@ -1,3 +1,19 @@
 # Godot 4+ specific ignores
 .godot/
 /android/
+
+# Godot-specific volume and crash ignores
+*.translation
+*.gdignore
+
+# .NET / C# specific ignores
+.mono/
+logs/
+data_*/
+obj/
+bin/
+.vs/
+*.userprefs
+*.suo
+.idea/
+.vscode/
