@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://mainscene123"]
+
+[ext_resource type="Script" uid="uid://b7r5515jw852g" path="res://Scripts/Main.cs" id="1_main"]
+[ext_resource type="PackedScene" uid="uid://cxab3x2y" path="res://Scenes/UI/MainMenu.tscn" id="2_menu"]
+[ext_resource type="PackedScene" uid="uid://dxab3x20" path="res://Scenes/UI/HUD.tscn" id="3_hud"]
+
+[node name="Main" type="Node" unique_id=1641661847]
+script = ExtResource("1_main")
+
+[node name="LevelContainer" type="Node" parent="." unique_id=1464079225]
+
+[node name="MainMenu" parent="." unique_id=503761464 instance=ExtResource("2_menu")]
+
+[node name="HUD" parent="." unique_id=1742660295 instance=ExtResource("3_hud")]
+visible = false
