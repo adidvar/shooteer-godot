@@ -11,13 +11,18 @@ config_version=5
 [application]
 
 config/name="Shooter"
-run/main_scene="uid://cxab3x2y"
-config/features=PackedStringArray("4.6", "Forward Plus")
+run/main_scene="uid://mainscene123"
+config/features=PackedStringArray("4.6", "C#", "Forward Plus")
 config/icon="res://icon.svg"
+
+[display]
+
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
 
 [dotnet]
 
-project/assembly_name="Shooter"
+project/assembly_name="shooteer-godot"
 
 [physics]
 
@@ -26,11 +31,3 @@ project/assembly_name="Shooter"
 [rendering]
 
 rendering_device/driver.windows="d3d12"
-
-[display]
-
-window/size/viewport_width=1152
-window/size/viewport_height=648
-window/stretch/mode="canvas_items"
-window/stretch/aspect="expand"
-
