@@ -24,6 +24,13 @@ public partial class Player : CharacterBody3D
 	private double _respawnTimer = 0.0;
 	private const double RespawnDelay = 3.0;
 
+	// --- Network interpolation (used on non-authority peers only) ---
+	// How fast the visual representation catches up to the received network state.
+	private const float InterpSpeed = 15.0f;
+	private Vector3 _netPosition;
+	private Vector3 _netRotation;
+	private bool _netInitialized = false;
+
 	[Signal]
 	public delegate void HealthChangedEventHandler(int newHealth);
 
@@ -74,6 +81,29 @@ public partial class Player : CharacterBody3D
 				hud.UpdateHealth(Health);
 			}
 		}
+		else
+		{
+			// Seed interpolation targets with spawn position, so there is no
+			// initial jump on the first received packet.
+			_netPosition = Position;
+			_netRotation = Rotation;
+			_netInitialized = true;
+
+			// Disable camera for remote players
+			_camera.Current = false;
+
+			// Subscribe to the synchronizer so we know when new data arrived.
+			var sync = GetNode<MultiplayerSynchronizer>("MultiplayerSynchronizer");
+			sync.Synchronized += OnNetworkStateReceived;
+		}
+	}
+
+	// Called every time the MultiplayerSynchronizer delivers a fresh snapshot.
+	private void OnNetworkStateReceived()
+	{
+		// Store the authoritative state as the interpolation target.
+		_netPosition = Position;
+		_netRotation = Rotation;
 	}
 
 	public override void _Input(InputEvent @event)
@@ -188,6 +218,24 @@ public partial class Player : CharacterBody3D
 			Input.MouseMode = Input.MouseModeEnum.Captured;
 			EmitSignal(SignalName.HealthChanged, Health);
 		}
+	}
+
+	public override void _Process(double delta)
+	{
+		// Only interpolate on peers that do NOT own this player.
+		if (IsMultiplayerAuthority() || !_netInitialized) return;
+
+		// Smoothly move the visual position toward the latest network snapshot.
+		Position = Position.Lerp(_netPosition, InterpSpeed * (float)delta);
+
+		// Smoothly rotate toward the latest network snapshot.
+		// We interpolate each Euler axis independently; Slerp on a Basis would
+		// be cleaner, but this is fine for a capsule character.
+		Rotation = new Vector3(
+			Mathf.LerpAngle(Rotation.X, _netRotation.X, InterpSpeed * (float)delta),
+			Mathf.LerpAngle(Rotation.Y, _netRotation.Y, InterpSpeed * (float)delta),
+			Mathf.LerpAngle(Rotation.Z, _netRotation.Z, InterpSpeed * (float)delta)
+		);
 	}
 
 	public override void _PhysicsProcess(double delta)
