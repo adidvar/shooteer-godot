@@ -1,6 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://player123"]
+[gd_scene format=3 uid="uid://player123"]
 
-[ext_resource type="Script" path="res://Scripts/Player.cs" id="1_player"]
+[ext_resource type="Script" uid="uid://drur2ux3jw463" path="res://Scripts/Player.cs" id="1_player"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_xx"]
 
@@ -17,18 +17,18 @@ properties/2/path = NodePath(".:Health")
 properties/2/spawn = true
 properties/2/replication_mode = 1
 
-[node name="Player" type="CharacterBody3D"]
+[node name="Player" type="CharacterBody3D" unique_id=225238405]
 script = ExtResource("1_player")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1937966572]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 shape = SubResource("CapsuleShape3D_xx")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=370468919]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 mesh = SubResource("CapsuleMesh_xx")
 
-[node name="Camera3D" type="Camera3D" parent="."]
+[node name="Camera3D" type="Camera3D" parent="." unique_id=545368912]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
 
 [node name="GunRayCast3D" type="RayCast3D" parent="Camera3D"]
@@ -37,4 +37,3 @@ enabled = true
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_xx")
-
