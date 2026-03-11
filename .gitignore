@@ -2,6 +2,8 @@
 .godot/
 /android/
 
+.DS_Store
+
 # Godot-specific volume and crash ignores
 *.translation
 *.gdignore

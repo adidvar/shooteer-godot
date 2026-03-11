@@ -1,0 +1,60 @@
+[gd_scene format=3 uid="uid://cxabbsmenu"]
+
+[ext_resource type="Script" path="res://Scripts/UI/SettingsMenu.cs" id="1_script"]
+[ext_resource type="Theme" uid="uid://c7x80a00a1b2c" path="res://Themes/MainTheme.tres" id="2_theme"]
+
+[node name="SettingsMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_theme")
+script = ExtResource("1_script")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 0.95)
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Label" type="Label" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "SETTINGS"
+horizontal_alignment = 1
+
+[node name="SensLabel" type="Label" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "Mouse Sensitivity: 0.002"
+horizontal_alignment = 1
+
+[node name="SensSlider" type="HSlider" parent="CenterContainer/VBoxContainer"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+min_value = 0.0005
+max_value = 0.01
+step = 0.0005
+value = 0.002
+
+[node name="BackBtn" type="Button" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "Back"
+
+[node name="HoverSound" type="AudioStreamPlayer" parent="."]
+
+[connection signal="value_changed" from="CenterContainer/VBoxContainer/SensSlider" to="." method="OnSensChanged"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/BackBtn" to="." method="OnBackPressed"]
+[connection signal="mouse_entered" from="CenterContainer/VBoxContainer/BackBtn" to="." method="OnHover"]
