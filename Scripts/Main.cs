@@ -112,11 +112,25 @@ public partial class Main : Node
 	private void OnServerDisconnected()
 	{
 		GD.Print("Server disconnected.");
+		ReturnToMainMenu();
+	}
+
+	public void ReturnToMainMenu()
+	{
+		if (Multiplayer.MultiplayerPeer != null)
+		{
+			Multiplayer.MultiplayerPeer.Close();
+			Multiplayer.MultiplayerPeer = null;
+		}
+		
 		_mainMenu.Show();
 		_hud.Hide();
-		if (_levelContainer.GetChildCount() > 0)
+		
+		foreach (Node child in _levelContainer.GetChildren())
 		{
-			_levelContainer.GetChild(0).QueueFree(); // Remove map
+			child.QueueFree();
 		}
+		
+		Input.MouseMode = Input.MouseModeEnum.Visible;
 	}
 }

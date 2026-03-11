@@ -1,6 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://map123"]
+[gd_scene format=3 uid="uid://map123"]
 
-[ext_resource type="Script" path="res://Scripts/Map.cs" id="1_map"]
+[ext_resource type="Script" uid="uid://blnllq66qcq1x" path="res://Scripts/Map.cs" id="1_map"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_floor"]
 albedo_color = Color(0.2, 0.5, 0.2, 1)
@@ -12,24 +12,51 @@ size = Vector3(50, 1, 50)
 [sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
 size = Vector3(50, 1, 50)
 
-[node name="Map" type="Node3D"]
+[node name="Map" type="Node3D" unique_id=22812419]
 script = ExtResource("1_map")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1901856166]
 transform = Transform3D(0.5, -0.75, 0.433013, 0, 0.5, 0.866025, -0.866025, -0.433013, 0.25, 0, 10, 0)
 shadow_enabled = true
 
-[node name="Floor" type="StaticBody3D" parent="."]
+[node name="Floor" type="StaticBody3D" parent="." unique_id=411185234]
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Floor"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Floor" unique_id=1908577083]
 mesh = SubResource("BoxMesh_floor")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor" unique_id=640009544]
 shape = SubResource("BoxShape3D_floor")
 
-[node name="Players" type="Node3D" parent="."]
+[node name="Obstacles" type="Node3D" parent="." unique_id=33357878]
 
-[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
-_spawnable_scenes = PackedStringArray("res://Scenes/Player.tscn")
+[node name="CSGBox3D" type="CSGBox3D" parent="Obstacles" unique_id=1281204437]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -5)
+use_collision = true
+size = Vector3(4, 2, 4)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Obstacles" unique_id=1982121519]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 2, -10)
+use_collision = true
+size = Vector3(4, 4, 4)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="Obstacles" unique_id=1924601420]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, -15)
+use_collision = true
+size = Vector3(4, 6, 4)
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="Obstacles" unique_id=1971647148]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0.5, -5)
+use_collision = true
+size = Vector3(6, 1, 6)
+
+[node name="CSGBox3D5" type="CSGBox3D" parent="Obstacles" unique_id=244267078]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 1, -5)
+use_collision = true
+size = Vector3(3, 2, 3)
+
+[node name="Players" type="Node3D" parent="." unique_id=1919279637]
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="." unique_id=634076810]
+_spawnable_scenes = PackedStringArray("uid://player123")
 spawn_path = NodePath("../Players")
 spawn_limit = 10

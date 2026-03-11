@@ -1,8 +1,8 @@
 [gd_scene load_steps=4 format=3 uid="uid://dxab3x2z"]
 
 [ext_resource type="Script" path="res://Scripts/UI/HUD.cs" id="1_yyy"]
-[ext_resource type="Theme" uid="uid://c7x8y9z0a1b2c" path="res://Themes/MainTheme.tres" id="1_theme"]
-[ext_resource type="Texture2D" uid="uid://cxsqw140x8w3l" path="res://icon.svg" id="2_zzz"]
+[ext_resource type="Theme" uid="uid://c7x80a00a1b2c" path="res://Themes/MainTheme.tres" id="1_theme"]
+[ext_resource type="AudioStream" uid="uid://sound_hover" path="res://Sounds/UI/hover-sound.mp3" id="2_sound"]
 
 [node name="HUD" type="CanvasLayer"]
 script = ExtResource("1_yyy")
@@ -17,22 +17,20 @@ grow_vertical = 2
 mouse_filter = 2
 theme = ExtResource("1_theme")
 
-[node name="Crosshair" type="TextureRect" parent="Control"]
+[node name="Crosshair" type="ColorRect" parent="Control"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -16.0
-offset_top = -16.0
-offset_right = 16.0
-offset_bottom = 16.0
+offset_left = -2.0
+offset_top = -2.0
+offset_right = 2.0
+offset_bottom = 2.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("2_zzz")
-expand_mode = 1
-stretch_mode = 5
+color = Color(1, 0.55, 0, 1)
 
 [node name="HealthBar" type="ProgressBar" parent="Control"]
 layout_mode = 1
@@ -58,3 +56,62 @@ theme_override_font_sizes/font_size = 14
 text = "HP: 100/100"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="EscapePanel" type="Panel" parent="Control"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Background" type="ColorRect" parent="Control/EscapePanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.8)
+
+[node name="CenterContainer" type="CenterContainer" parent="Control/EscapePanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/EscapePanel/CenterContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="ReturnBtn" type="Button" parent="Control/EscapePanel/CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "Return"
+
+[node name="MainMenuBtn" type="Button" parent="Control/EscapePanel/CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "Main Menu"
+
+[node name="SettingsBtn" type="Button" parent="Control/EscapePanel/CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "Settings"
+
+[node name="ExitBtn" type="Button" parent="Control/EscapePanel/CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "Quit Desktop"
+
+[node name="HoverSound" type="AudioStreamPlayer" parent="Control"]
+stream = ExtResource("2_sound")
+
+[connection signal="pressed" from="Control/EscapePanel/CenterContainer/VBoxContainer/ReturnBtn" to="." method="OnReturnPressed"]
+[connection signal="mouse_entered" from="Control/EscapePanel/CenterContainer/VBoxContainer/ReturnBtn" to="." method="OnHover"]
+[connection signal="pressed" from="Control/EscapePanel/CenterContainer/VBoxContainer/MainMenuBtn" to="." method="OnMainMenuPressed"]
+[connection signal="mouse_entered" from="Control/EscapePanel/CenterContainer/VBoxContainer/MainMenuBtn" to="." method="OnHover"]
+[connection signal="pressed" from="Control/EscapePanel/CenterContainer/VBoxContainer/SettingsBtn" to="." method="OnSettingsPressed"]
+[connection signal="mouse_entered" from="Control/EscapePanel/CenterContainer/VBoxContainer/SettingsBtn" to="." method="OnHover"]
+[connection signal="pressed" from="Control/EscapePanel/CenterContainer/VBoxContainer/ExitBtn" to="." method="OnExitPressed"]
+[connection signal="mouse_entered" from="Control/EscapePanel/CenterContainer/VBoxContainer/ExitBtn" to="." method="OnHover"]
