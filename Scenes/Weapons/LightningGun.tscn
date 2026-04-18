@@ -1,0 +1,69 @@
+[gd_scene format=3 uid="uid://doijtykq31vq3"]
+
+[ext_resource type="Script" uid="uid://lightninggunwep" path="res://Scripts/Weapons/LightningGun.cs" id="1_bweapon"]
+[ext_resource type="PackedScene" uid="uid://dytexedqjwijw" path="res://Assets/m4-free/source/M4_low.fbx" id="2_m4fbx"]
+[ext_resource type="Material" uid="uid://djisvxgqigdi3" path="res://Assets/m4-free/textures/material.tres" id="3_7k2rs"]
+[ext_resource type="AudioStream" uid="uid://m4t0ln4jdkfb" path="res://Sounds/Weapons/shoot.mp3" id="7_shoot"]
+
+[node name="LightningGun" type="Node3D" unique_id=1564760989]
+script = ExtResource("1_bweapon")
+
+[node name="M4Model" type="Node3D" parent="." unique_id=2130541061]
+transform = Transform3D(-0.3, 0, -2.6226834e-08, 0, 0.3, 0, 2.6226834e-08, 0, -0.3, 0.3, -0.3, -0.5)
+
+[node name="M4_low" parent="M4Model" unique_id=869463878 instance=ExtResource("2_m4fbx")]
+
+[node name="mag_low" parent="M4Model/M4_low" index="0" unique_id=253362212]
+material_override = ExtResource("3_7k2rs")
+
+[node name="details_low" parent="M4Model/M4_low" index="1" unique_id=1626435344]
+material_override = ExtResource("3_7k2rs")
+
+[node name="ruchka_low" parent="M4Model/M4_low" index="2" unique_id=1117514469]
+material_override = ExtResource("3_7k2rs")
+
+[node name="kurok_low" parent="M4Model/M4_low" index="3" unique_id=994373942]
+material_override = ExtResource("3_7k2rs")
+
+[node name="okolmag_low" parent="M4Model/M4_low" index="4" unique_id=715352815]
+material_override = ExtResource("3_7k2rs")
+
+[node name="undercorp_low" parent="M4Model/M4_low" index="5" unique_id=374370437]
+material_override = ExtResource("3_7k2rs")
+
+[node name="zatvor_low" parent="M4Model/M4_low" index="6" unique_id=1934665458]
+material_override = ExtResource("3_7k2rs")
+
+[node name="corpuse_low" parent="M4Model/M4_low" index="7" unique_id=769740486]
+material_override = ExtResource("3_7k2rs")
+
+[node name="okoloruchk_low" parent="M4Model/M4_low" index="8" unique_id=1639495351]
+material_override = ExtResource("3_7k2rs")
+
+[node name="derjat_low" parent="M4Model/M4_low" index="9" unique_id=1286126181]
+material_override = ExtResource("3_7k2rs")
+
+[node name="tzevyo_low" parent="M4Model/M4_low" index="10" unique_id=196192747]
+material_override = ExtResource("3_7k2rs")
+
+[node name="pritzel_low" parent="M4Model/M4_low" index="11" unique_id=160818558]
+material_override = ExtResource("3_7k2rs")
+
+[node name="priklad_low_001" parent="M4Model/M4_low" index="12" unique_id=2077395856]
+material_override = ExtResource("3_7k2rs")
+
+[node name="puli_low" parent="M4Model/M4_low" index="13" unique_id=1265675558]
+material_override = ExtResource("3_7k2rs")
+
+[node name="MuzzlePoint" type="Marker3D" parent="." unique_id=777625924]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, -0.25045148, -0.9)
+
+[node name="AimDetector" type="RayCast3D" parent="." unique_id=1769003819]
+target_position = Vector3(0, 0, -100)
+
+[node name="ShootSound" type="AudioStreamPlayer3D" parent="." unique_id=251729747]
+stream = ExtResource("7_shoot")
+unit_size = 5.0
+max_distance = 30.0
+
+[editable path="M4Model/M4_low"]

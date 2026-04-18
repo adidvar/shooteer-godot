@@ -1,5 +1,4 @@
 using Godot;
-using System;
 
 public partial class MainMenu : Control
 {
@@ -11,6 +10,9 @@ public partial class MainMenu : Control
 	private PackedScene _settingsScene = GD.Load<PackedScene>("res://Scenes/UI/SettingsMenu.tscn");
 	private Control _settingsInstance;
 
+	[Signal] public delegate void HostRequestedEventHandler();
+	[Signal] public delegate void JoinRequestedEventHandler(string ip);
+
 	public override void _Ready()
 	{
 		_ipLineEdit = GetNode<LineEdit>("VBoxContainer/IPLineEdit");
@@ -21,19 +23,15 @@ public partial class MainMenu : Control
 
 	public void OnHostButtonPressed()
 	{
-		GetParent<Main>().HostGame();
-
-	}	
+		EmitSignal(SignalName.HostRequested);
+	}
 
 	public void OnJoinButtonPressed()
 	{
 		string ip = _ipLineEdit.Text;
 		if (string.IsNullOrEmpty(ip))
-		{
 			ip = "127.0.0.1";
-		}
-		GetParent<Main>().JoinGame(ip);
-
+		EmitSignal(SignalName.JoinRequested, ip);
 	}
 
 	public void OnSettingsButtonPressed()
@@ -49,8 +47,6 @@ public partial class MainMenu : Control
 	public void OnHover()
 	{
 		if (_hoverSound != null && _hoverSound.Stream != null)
-		{
 			_hoverSound.Play();
-		}
 	}
 }

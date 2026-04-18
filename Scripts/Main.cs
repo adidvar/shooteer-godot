@@ -20,10 +20,10 @@ public partial class Main : Node
 		// Hide HUD initially
 		_hud.Hide();
 
-		// Connect menu signals
-		// Since MainMenu buttons are currently connected to itself, we need to handle that.
-		// For simplicity, we can intercept or change MainMenu's behavior. Let's just update MainMenu to emit signals instead.
-		
+		// Connect MainMenu signals instead of MainMenu reaching up into Main.
+		_mainMenu.HostRequested += HostGame;
+		_mainMenu.JoinRequested += JoinGame;
+
 		Multiplayer.PeerConnected += OnPeerConnected;
 		Multiplayer.PeerDisconnected += OnPeerDisconnected;
 		Multiplayer.ConnectedToServer += OnConnectedToServer;
@@ -81,20 +81,13 @@ public partial class Main : Node
 	private void OnPeerConnected(long id)
 	{
 		GD.Print("Peer connected: " + id);
-		// Player spawning is handled by MultiplayerSpawner in Map scene
+		// Player spawning is handled by Map.cs on the server side.
 	}
 
 	private void OnPeerDisconnected(long id)
 	{
 		GD.Print("Peer disconnected: " + id);
-		// Despawn happens automatically if we set MultiplayerSpawner to handle it. 
-		// Or we can manually remove the node.
-		var playersNode = GetNodeOrNull("/root/Main/LevelContainer/Map/Players");
-		if (playersNode != null && playersNode.HasNode(id.ToString()))
-		{
-			var playerNode = playersNode.GetNode(id.ToString());
-			playerNode.QueueFree();
-		}
+		// Player despawning is handled by Map.cs on the server side.
 	}
 
 	private void OnConnectedToServer()

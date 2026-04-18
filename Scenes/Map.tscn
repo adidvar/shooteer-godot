@@ -28,6 +28,13 @@ uv1_triplanar = true
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ngcqm"]
 albedo_texture = ExtResource("4_qumfl")
 
+[sub_resource type="Environment" id="Environment_qumfl"]
+ssao_enabled = true
+glow_enabled = true
+glow_intensity = 0.8
+glow_bloom = 0.2
+glow_blend_mode = 1
+
 [node name="Map" type="Node3D" unique_id=1445613477]
 script = ExtResource("1_map")
 
@@ -100,3 +107,9 @@ material = SubResource("StandardMaterial3D_5t7yc")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 1.5, -1)
 radius = 1.0
 material = SubResource("StandardMaterial3D_ngcqm")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1053738223]
+environment = SubResource("Environment_qumfl")
+
+[node name="ReflectionProbe" type="ReflectionProbe" parent="." unique_id=613631920]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.8024371, 2.3794231, 0)
