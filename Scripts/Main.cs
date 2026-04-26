@@ -5,6 +5,7 @@ public partial class Main : Node
 {
 	private MainMenu _mainMenu;
 	private HUD _hud;
+	private MatchManager _matchManager;
 	
 	private const int Port = 8910;
 	private const int MaxClients = 4;
@@ -16,6 +17,10 @@ public partial class Main : Node
 		_mainMenu = GetNode<MainMenu>("MainMenu");
 		_hud = GetNode<HUD>("HUD");
 		_levelContainer = GetNode<Node>("LevelContainer");
+
+		// Create MatchManager as a persistent child of Main.
+		_matchManager = new MatchManager { Name = "MatchManager" };
+		AddChild(_matchManager);
 
 		// Hide HUD initially
 		_hud.Hide();
@@ -66,6 +71,8 @@ public partial class Main : Node
 		_mainMenu.Hide();
 		_hud.Show();
 		LoadMap();
+		// Only the server manages the match timer; clients get synced via RPC.
+		_matchManager.StartMatch();
 	}
 
 	private void LoadMap()

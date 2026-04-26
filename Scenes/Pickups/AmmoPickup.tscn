@@ -1,0 +1,55 @@
+[gd_scene format=3 uid="uid://pickup_ammo01"]
+
+[ext_resource type="Script" path="res://Scripts/Pickups/AmmoPickup.cs" id="1_ammoscript"]
+[ext_resource type="Shader" path="res://Scenes/Pickups/RespawnCircle.gdshader" id="2_shader"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_col"]
+size = Vector3(0.6, 0.6, 0.6)
+
+[sub_resource type="BoxMesh" id="BoxMesh_ammo"]
+size = Vector3(0.5, 0.5, 0.5)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ammo"]
+albedo_color = Color(0.0, 0.78, 1.0, 1.0)
+emission_enabled = true
+emission = Color(0.0, 0.4, 0.6, 1)
+emission_energy_multiplier = 1.5
+
+[sub_resource type="QuadMesh" id="QuadMesh_ring"]
+size = Vector2(0.9, 0.9)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ring"]
+shader = ExtResource("2_shader")
+shader_parameter/progress = 0.0
+shader_parameter/fill_color = Color(0.0, 0.78, 1.0, 1.0)
+shader_parameter/bg_color = Color(0.1, 0.1, 0.1, 0.5)
+shader_parameter/inner_r = 0.30
+shader_parameter/outer_r = 0.47
+
+[node name="AmmoPickup" type="Area3D"]
+script = ExtResource("1_ammoscript")
+collision_layer = 4
+collision_mask = 1
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_col")
+
+[node name="Mesh" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_ammo")
+surface_material_override/0 = SubResource("StandardMaterial3D_ammo")
+
+[node name="RespawnIndicator" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, 0)
+visible = false
+
+[node name="RingMesh" type="MeshInstance3D" parent="RespawnIndicator"]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0)
+mesh = SubResource("QuadMesh_ring")
+surface_material_override/0 = SubResource("ShaderMaterial_ring")
+
+[node name="CountdownLabel" type="Label3D" parent="RespawnIndicator"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+pixel_size = 0.005
+text = "10"
+font_size = 48
+modulate = Color(0.0, 0.78, 1.0, 1)

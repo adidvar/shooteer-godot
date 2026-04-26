@@ -38,7 +38,8 @@ public partial class HomingRocketWeapon : WeaponBase
 	{
 		if (_cooldown > 0) return;
 		if (MuzzlePoint == null) return;
-		
+		if (!TryConsumeAmmo()) return;
+
 		_cooldown = Stats != null ? Stats.FireRate : 1.0f;
 		ShootSoundPlayer?.Play();
 
@@ -69,7 +70,14 @@ public partial class HomingRocketWeapon : WeaponBase
 		{
 			AimDetector.ForceRaycastUpdate();
 			Vector3 aimTarget = GetAimTarget();
-			rocket.LookAt(aimTarget, Vector3.Up);
+			Vector3 dir = (aimTarget - rocket.GlobalPosition).Normalized();
+
+			if (dir.LengthSquared() > 0.001f)
+			{
+				// LookAt fails when dir is parallel to up — use Right as fallback
+				Vector3 up = Mathf.Abs(dir.Dot(Vector3.Up)) > 0.98f ? Vector3.Right : Vector3.Up;
+				rocket.LookAt(rocket.GlobalPosition + dir, up);
+			}
 		}
 		else
 		{

@@ -1,0 +1,56 @@
+[gd_scene format=3 uid="uid://pickup_health01"]
+
+[ext_resource type="Script" path="res://Scripts/Pickups/HealthPickup.cs" id="1_hpscript"]
+[ext_resource type="Shader" path="res://Scenes/Pickups/RespawnCircle.gdshader" id="2_shader"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_col"]
+radius = 0.8
+
+[sub_resource type="SphereMesh" id="SphereMesh_hp"]
+radius = 0.35
+height = 0.7
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hp"]
+albedo_color = Color(0.1, 0.9, 0.2, 1)
+emission_enabled = true
+emission = Color(0.05, 0.5, 0.1, 1)
+emission_energy_multiplier = 1.5
+
+[sub_resource type="QuadMesh" id="QuadMesh_ring"]
+size = Vector2(1.0, 1.0)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ring"]
+shader = ExtResource("2_shader")
+shader_parameter/progress = 0.0
+shader_parameter/fill_color = Color(0.1, 0.9, 0.2, 1.0)
+shader_parameter/bg_color = Color(0.1, 0.1, 0.1, 0.5)
+shader_parameter/inner_r = 0.30
+shader_parameter/outer_r = 0.47
+
+[node name="HealthPickup" type="Area3D"]
+script = ExtResource("1_hpscript")
+collision_layer = 4
+collision_mask = 1
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_col")
+
+[node name="Mesh" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_hp")
+surface_material_override/0 = SubResource("StandardMaterial3D_hp")
+
+[node name="RespawnIndicator" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
+visible = false
+
+[node name="RingMesh" type="MeshInstance3D" parent="RespawnIndicator"]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0)
+mesh = SubResource("QuadMesh_ring")
+surface_material_override/0 = SubResource("ShaderMaterial_ring")
+
+[node name="CountdownLabel" type="Label3D" parent="RespawnIndicator"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+pixel_size = 0.005
+text = "15"
+font_size = 48
+modulate = Color(0.1, 0.9, 0.2, 1)

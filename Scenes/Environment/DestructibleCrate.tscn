@@ -1,0 +1,35 @@
+[gd_scene format=3 uid="uid://env_destcrate01"]
+
+[ext_resource type="Script" path="res://Scripts/Environment/DestructibleCrate.cs" id="1_script"]
+[ext_resource type="Script" path="res://Scripts/Components/HealthComponent.cs" id="2_health"]
+[ext_resource type="PackedScene" path="res://Scenes/Particles/Sparks.tscn" id="3_sparks"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_col"]
+size = Vector3(0.9, 0.9, 0.9)
+
+[sub_resource type="BoxMesh" id="BoxMesh_crate"]
+size = Vector3(0.88, 0.88, 0.88)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_crate"]
+albedo_color = Color(0.55, 0.35, 0.12, 1.0)
+roughness = 0.9
+
+[node name="DestructibleCrate" type="RigidBody3D"]
+script = ExtResource("1_script")
+collision_layer = 1
+collision_mask = 1
+SparksScene = ExtResource("3_sparks")
+mass = 15.0
+linear_damp = 0.5
+angular_damp = 0.8
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_col")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_crate")
+surface_material_override/0 = SubResource("StandardMaterial3D_crate")
+
+[node name="HealthComponent" type="Node" parent="."]
+script = ExtResource("2_health")
+MaxHealth = 50

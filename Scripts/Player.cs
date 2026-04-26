@@ -22,6 +22,7 @@ public partial class Player : CharacterBody3D
 
 	// ── State ─────────────────────────────────────────────────────────────────
 	private bool _isDead = false;
+	public bool IsDead => _isDead;
 	private double _respawnTimer = 0.0;
 	private const double RespawnDelay = 3.0;
 
@@ -76,6 +77,7 @@ public partial class Player : CharacterBody3D
 		if (WeaponCtrl != null)
 		{
 			WeaponCtrl.WeaponSwitched += hud.OnWeaponSwitched;
+			WeaponCtrl.AmmoChanged    += hud.UpdateAmmo;
 			hud.OnWeaponSwitched(WeaponCtrl.CurrentWeaponIndex, WeaponCtrl.CurrentWeaponName);
 			// Deferred so WeaponController has had time to instantiate weapon nodes.
 			Callable.From(() => ConnectWeaponHitMarkers(hud)).CallDeferred();
@@ -94,7 +96,15 @@ public partial class Player : CharacterBody3D
 
 		foreach (Node child in holder.GetChildren())
 			if (child is WeaponBase weapon)
-				weapon.HitMarker += hud.ShowHitMarker;
+			{
+				weapon.HitMarker  += hud.ShowHitMarker;
+				// Forward per-weapon ammo changes to HUD (only if it's the active weapon)
+				weapon.AmmoChanged += (cur, max) =>
+				{
+					if (WeaponCtrl?.CurrentWeaponIndex == weapon.GetIndex())
+						hud.UpdateAmmo(cur, max);
+				};
+			}
 	}
 
 	// ── Input ─────────────────────────────────────────────────────────────────
@@ -139,7 +149,13 @@ public partial class Player : CharacterBody3D
 			{
 				_respawnTimer -= delta;
 				if (_respawnTimer <= 0.0)
-					RpcId(1, MethodName.ServerRespawn);
+				{
+					// RpcId(1) with CallLocal=false is a no-op when we ARE peer 1 (server).
+					if (Multiplayer.IsServer())
+						ServerRespawn();
+					else
+						RpcId(1, MethodName.ServerRespawn);
+				}
 			}
 			return;
 		}
@@ -161,6 +177,32 @@ public partial class Player : CharacterBody3D
 	}
 
 	// ── Public API ────────────────────────────────────────────────────────────
+
+	/// <summary>
+	/// Called server-side by environmental hazards (HazardZone etc.).
+	/// Applies damage, syncs HP, and triggers death with a -1 frag penalty.
+	/// </summary>
+	public void ServerEnvironmentDamage(int damage)
+	{
+		if (!Multiplayer.IsServer() || _isDead) return;
+
+		HealthComp.TakeDamage(damage);
+
+		int peerId = int.Parse(Name);
+		// ClientSyncHealth: call directly + forward to the owning peer if remote.
+		ClientSyncHealth(HealthComp.CurrentHealth);
+		if (peerId != Multiplayer.GetUniqueId())
+			RpcId(peerId, MethodName.ClientSyncHealth, HealthComp.CurrentHealth);
+
+		if (HealthComp.CurrentHealth <= 0)
+		{
+			// ClientDie: call directly on server + forward to owning peer if remote.
+			ClientDie();
+			if (peerId != Multiplayer.GetUniqueId())
+				RpcId(peerId, MethodName.ClientDie);
+			GetNodeOrNull<MatchManager>("/root/Main/MatchManager")?.SubFrag(peerId);
+		}
+	}
 
 	/// <summary>
 	/// Ask the server to apply damage to a target player.
@@ -187,7 +229,13 @@ public partial class Player : CharacterBody3D
 		target.Rpc(MethodName.ClientSyncHealth, target.HealthComp.CurrentHealth);
 
 		if (target.HealthComp.CurrentHealth <= 0)
+		{
 			target.Rpc(MethodName.ClientDie);
+
+			// Award a frag to the shooter.
+			int killerPeerId = int.Parse(Name); // Node name == peer ID
+			GetNodeOrNull<MatchManager>("/root/Main/MatchManager")?.AddFrag(killerPeerId);
+		}
 	}
 
 	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
