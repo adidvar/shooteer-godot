@@ -34,6 +34,7 @@ public partial class BasicWeapon : WeaponBase
 	{
 		if (_cooldown > 0) return;
 		if (AimDetector == null || MuzzlePoint == null) return;
+		if (!TryConsumeAmmo()) return;
 
 		_cooldown = Stats.FireRate;
 

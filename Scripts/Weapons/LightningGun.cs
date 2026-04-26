@@ -16,6 +16,14 @@ public partial class LightningGun : WeaponBase
 	private GpuParticles3D _beamParticles;
 	private double _tickTimer = 0.0;
 	private bool _isFiring = false;
+	private float _pulseTime = 0f;   // drives smooth beam thickness oscillation
+	// Bolt-network: CPU-side ImmediateMesh connecting random nodes along the beam
+	private const int   BoltNodeCount     = 14;
+	private const float BoltConnectRadius = 2.2f;
+	private readonly Vector3[] _boltNodes = new Vector3[BoltNodeCount];
+	private ImmediateMesh  _networkMesh;
+	private MeshInstance3D _networkMeshInst;
+	private ShaderMaterial _networkMaterial;
 
 	public override void _Ready()
 	{
@@ -34,8 +42,19 @@ public partial class LightningGun : WeaponBase
 		// Setup Beam visual
 		_beamMesh = new MeshInstance3D();
 		_beamMesh.Mesh = new CylinderMesh { TopRadius = 0.05f, BottomRadius = 0.05f, Height = 1f };
-		var mat = new StandardMaterial3D { AlbedoColor = new Color(0, 0.8f, 1f), EmissionEnabled = true, Emission = new Color(0, 0.5f, 1f), EmissionEnergyMultiplier = 4f };
-		_beamMesh.MaterialOverride = mat;
+		var beamShader = ResourceLoader.Load<Shader>("res://Scenes/Weapons/LightningBeam.gdshader");
+		if (beamShader != null)
+		{
+			_beamMesh.MaterialOverride = new ShaderMaterial { Shader = beamShader };
+		}
+		else
+		{
+			_beamMesh.MaterialOverride = new StandardMaterial3D
+			{
+				AlbedoColor = new Color(0, 0.8f, 1f), EmissionEnabled = true,
+				Emission = new Color(0, 0.5f, 1f), EmissionEnergyMultiplier = 4f
+			};
+		}
 		_beamMesh.Visible = false;
 		AddChild(_beamMesh);
 
@@ -48,19 +67,20 @@ public partial class LightningGun : WeaponBase
 		_coneParticles.CastShadow = GeometryInstance3D.ShadowCastingSetting.Off;
 		
 		var pProcess = new ParticleProcessMaterial();
-		pProcess.Direction = new Vector3(0, 0, -1);
-		pProcess.Spread = ConeAngleDegrees / 2f;
-		pProcess.InitialVelocityMin = 5f;
-		pProcess.InitialVelocityMax = 15f;
-		pProcess.Gravity = Vector3.Zero;
+		pProcess.Direction = new Vector3(0, 1, 0);  // upward default; overridden by LookAt each frame
+		pProcess.Spread = 180f;                      // omnidirectional burst — looks like real sparks
+		pProcess.InitialVelocityMin = 0.5f;
+		pProcess.InitialVelocityMax = 3.5f;
+		pProcess.Gravity = new Vector3(0f, -5f, 0f); // pull sparks down for realism
 		pProcess.ScaleCurve = new CurveTexture { Curve = new Curve() };
 		var scaleCurve = (Curve)pProcess.ScaleCurve.Get("curve");
 		scaleCurve.AddPoint(new Vector2(0, 1));
 		scaleCurve.AddPoint(new Vector2(1, 0));
+		_coneParticles.Amount = 80;
+		_coneParticles.Lifetime = 0.45f;
 		_coneParticles.ProcessMaterial = pProcess;
-
-		var pass = new BoxMesh { Size = new Vector3(0.03f, 0.03f, 0.03f) };
-		var pMat = new StandardMaterial3D 
+		var pass = new SphereMesh { Radius = 0.018f, Height = 0.036f, RadialSegments = 4, Rings = 2 };
+		var pMat = new StandardMaterial3D
 		{ 
 			AlbedoColor = new Color(0.2f, 0.8f, 1f), 
 			EmissionEnabled = true, 
@@ -99,6 +119,23 @@ public partial class LightningGun : WeaponBase
 		bpPass.Material = bpMat;
 		_beamParticles.DrawPass1 = bpPass;
 		AddChild(_beamParticles);
+
+		// Bolt-network ImmediateMesh
+		_networkMesh     = new ImmediateMesh();
+		_networkMeshInst = new MeshInstance3D
+		{
+			Mesh       = _networkMesh,
+			TopLevel   = true,
+			CastShadow = GeometryInstance3D.ShadowCastingSetting.Off,
+			Visible    = false,
+		};
+		var netShader = ResourceLoader.Load<Shader>("res://Scenes/Weapons/LightningNetwork.gdshader");
+		if (netShader != null)
+		{
+			_networkMaterial = new ShaderMaterial { Shader = netShader };
+			_networkMeshInst.MaterialOverride = _networkMaterial;
+		}
+		AddChild(_networkMeshInst);
 	}
 
 	public override void _Process(double delta)
@@ -114,6 +151,7 @@ public partial class LightningGun : WeaponBase
 			_beamMesh.Visible = false;
 			_coneParticles.Emitting = false;
 			_beamParticles.Emitting = false;
+			if (_networkMeshInst != null) _networkMeshInst.Visible = false;
 			if (ShootSoundPlayer != null && ShootSoundPlayer.Playing)
 				ShootSoundPlayer.Stop();
 			return;
@@ -123,6 +161,12 @@ public partial class LightningGun : WeaponBase
 		if (_tickTimer <= 0)
 		{
 			_tickTimer = TickRate;
+			// Drain 1 ammo per tick; if empty, kill beam immediately
+			if (!TryConsumeAmmo())
+			{
+				_isFiring = false;
+				return;
+			}
 			ApplyConeDamage();
 		}
 	}
@@ -130,6 +174,9 @@ public partial class LightningGun : WeaponBase
 	public override void Fire()
 	{
 		if (AimDetector == null || MuzzlePoint == null || Stats == null) return;
+		// LightningGun drains 1 ammo per TickRate interval while held
+		// We check ammo here; actual consume happens in _Process tick
+		if (CurrentAmmo <= 0) return;
 
 		_isFiring = true;
 		_beamMesh.Visible = true;
@@ -155,9 +202,13 @@ public partial class LightningGun : WeaponBase
 		
 		var cyl = (CylinderMesh)_beamMesh.Mesh;
 		cyl.Height = distance;
-		// Jitter thickness dynamically
-		cyl.TopRadius = (float)GD.RandRange(0.02, 0.08);
-		cyl.BottomRadius = (float)GD.RandRange(0.02, 0.08);
+		// Smooth multi-frequency thickness oscillation (no visible stutter)
+		_pulseTime += (float)GetProcessDeltaTime();
+		float baseR = 0.038f + 0.020f * Mathf.Sin(_pulseTime * 12.1f)
+		                     + 0.009f * Mathf.Sin(_pulseTime * 27.3f);
+		cyl.TopRadius    = Mathf.Max(baseR + (float)GD.RandRange(-0.01, 0.01), 0.01f);
+		cyl.BottomRadius = Mathf.Max(baseR + (float)GD.RandRange(-0.01, 0.01), 0.01f);
+		UpdateBoltNetwork(MuzzlePoint.GlobalPosition, targetPoint);
 
 		// Draw beam particles
 		_beamParticles.GlobalPosition = _beamMesh.GlobalPosition;
@@ -238,5 +289,58 @@ public partial class LightningGun : WeaponBase
 		}
 
 		if (hitAnyone) NotifyHit(false);
+	}
+
+	/// <summary>
+	/// Builds an ImmediateMesh of line segments connecting random nodes
+	/// distributed along the beam — the "particle network" effect.
+	/// </summary>
+	private void UpdateBoltNetwork(Vector3 from, Vector3 to)
+	{
+		if (_networkMeshInst == null || _networkMesh == null) return;
+
+		// Keep the node at world origin so local == world space.
+		_networkMeshInst.GlobalTransform = Transform3D.Identity;
+		_networkMeshInst.Visible = true;
+
+		float len = from.DistanceTo(to);
+		if (len < 0.001f) return;
+
+		Vector3 dir   = (to - from).Normalized();
+		Vector3 perp  = dir.Cross(Vector3.Up);
+		if (perp.LengthSquared() < 0.001f) perp = dir.Cross(Vector3.Right);
+		perp = perp.Normalized();
+		Vector3 perp2 = dir.Cross(perp).Normalized();
+
+		float jitter = Mathf.Min(len * 0.10f, 0.55f);
+
+		// Distribute nodes along the beam with random perpendicular jitter
+		for (int i = 0; i < BoltNodeCount; i++)
+		{
+			float   t = (float)i / (BoltNodeCount - 1);
+			Vector3 p = from.Lerp(to, t);
+			if (i > 0 && i < BoltNodeCount - 1)
+			{
+				p += perp  * (GD.Randf() * 2f - 1f) * jitter;
+				p += perp2 * (GD.Randf() * 2f - 1f) * jitter;
+			}
+			_boltNodes[i] = p;
+		}
+
+		// Draw line segments between all node pairs within connection radius
+		_networkMesh.ClearSurfaces();
+		_networkMesh.SurfaceBegin(Mesh.PrimitiveType.Lines);
+		for (int a = 0; a < BoltNodeCount; a++)
+		{
+			for (int b = a + 1; b < BoltNodeCount; b++)
+			{
+				if (_boltNodes[a].DistanceTo(_boltNodes[b]) < BoltConnectRadius)
+				{
+					_networkMesh.SurfaceAddVertex(_boltNodes[a]);
+					_networkMesh.SurfaceAddVertex(_boltNodes[b]);
+				}
+			}
+		}
+		_networkMesh.SurfaceEnd();
 	}
 }

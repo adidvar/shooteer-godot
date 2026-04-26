@@ -15,8 +15,12 @@ public partial class WeaponController : Node
 	[Signal]
 	public delegate void WeaponSwitchedEventHandler(int newIndex, string weaponName);
 
+	[Signal]
+	public delegate void AmmoChangedEventHandler(int current, int max);
+
 	private Node3D _weaponsHolder;
 	private WeaponBase _activeWeapon;
+	public WeaponBase ActiveWeapon => _activeWeapon;
 	public int CurrentWeaponIndex { get; private set; } = 0;
 	public string CurrentWeaponName => _activeWeapon?.Stats?.WeaponName ?? _activeWeapon?.Name.ToString() ?? "None";
 	private Player _player;
@@ -73,6 +77,7 @@ public partial class WeaponController : Node
 	public override void _Process(double delta)
 	{
 		if (_player == null || !_player.IsMultiplayerAuthority()) return;
+		if (_player.IsDead) return;
 		if (Input.MouseMode != Input.MouseModeEnum.Captured) return;
 
 		if (Input.IsActionPressed("shoot"))
@@ -116,6 +121,8 @@ public partial class WeaponController : Node
 			_activeWeapon.Visible = true;
 			string wName = _activeWeapon.Stats != null ? _activeWeapon.Stats.WeaponName : _activeWeapon.Name.ToString();
 			EmitSignal(SignalName.WeaponSwitched, index, wName);
+			// Forward the new weapon's current ammo to HUD immediately
+			EmitSignal(SignalName.AmmoChanged, _activeWeapon.CurrentAmmo, _activeWeapon.MaxAmmo);
 		}
 	}
 }

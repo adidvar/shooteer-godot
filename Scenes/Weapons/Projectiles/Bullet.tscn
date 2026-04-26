@@ -1,11 +1,19 @@
-; Bullet scene – small sphere projectile
+; Bullet scene – elongated glowing orange capsule projectile
 [gd_scene format=3 uid="uid://bullet0001"]
 
 [ext_resource type="Script" path="res://Scripts/Weapons/Bullet.cs" id="1_bullet"]
 
-[sub_resource type="SphereMesh" id="SphereMesh_bl"]
-radius = 0.05
-height = 0.1
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_bl"]
+radius = 0.035
+height = 0.22
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bl"]
+shading_mode = 2
+transparency = 1
+albedo_color = Color(1, 0.55, 0.08, 1)
+emission_enabled = true
+emission = Color(1, 0.40, 0.0)
+emission_energy_multiplier = 6.0
 
 [sub_resource type="SphereShape3D" id="SphereShape_bl"]
 radius = 0.05
@@ -14,7 +22,10 @@ radius = 0.05
 script = ExtResource("1_bullet")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-mesh = SubResource("SphereMesh_bl")
+mesh = SubResource("CapsuleMesh_bl")
+material_override = SubResource("StandardMaterial3D_bl")
+rotation = Vector3(1.5708, 0, 0)
+cast_shadow = 0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("SphereShape_bl")
