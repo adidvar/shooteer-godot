@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://yh7yffywf7jy"]
+
+[ext_resource type="Script" uid="uid://cwu5cf7a0awcd" path="res://addons/func_godot/src/map/func_godot_map.gd" id="1_lh5ut"]
+[ext_resource type="Resource" uid="uid://bnvnqol1vx0jh" path="res://trenchbroom/shooter_map_settings.tres" id="2_158gp"]
+
+[node name="Trenchbroom_test" type="Node3D" unique_id=739195714]
+
+[node name="FuncGodotMap" type="Node3D" parent="." unique_id=1431335314]
+script = ExtResource("1_lh5ut")
+local_map_file = "uid://deqqty3tjsmwa"
+map_settings = ExtResource("2_158gp")
+metadata/_custom_type_script = "uid://cwu5cf7a0awcd"
