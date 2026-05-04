@@ -1,7 +1,12 @@
-<Project Sdk="Godot.NET.Sdk/4.6.1">
+<Project Sdk="Godot.NET.Sdk/4.6.2">
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <EnableDynamicLoading>true</EnableDynamicLoading>
     <RootNamespace>shooteergodot</RootNamespace>
   </PropertyGroup>
+  <ItemGroup>
+    <Content Include=".github\diagrams\lr3_1.md" />
+    <Content Include=".github\diagrams\lr3_2.md" />
+    <Content Include=".github\diagrams\lr3_3.md" />
+  </ItemGroup>
 </Project>
