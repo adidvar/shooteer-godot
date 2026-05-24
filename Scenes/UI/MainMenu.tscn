@@ -2,7 +2,7 @@
 
 [ext_resource type="Theme" uid="uid://c7x80a00a1b2c" path="res://Themes/MainTheme.tres" id="1_theme"]
 [ext_resource type="Script" uid="uid://dml6nt0djum85" path="res://Scripts/UI/MainMenu.cs" id="1_xxx"]
-[ext_resource type="AudioStream" uid="uid://sound_hover" path="res://Sounds/UI/hover-sound.mp3" id="2_sound"]
+[ext_resource type="AudioStream" path="res://Sounds/UI/hover-sound.mp3" id="2_sound"]
 
 [node name="MainMenu" type="Control" unique_id=2010916153]
 layout_mode = 3

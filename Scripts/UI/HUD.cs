@@ -41,7 +41,7 @@ public partial class HUD : CanvasLayer
 	private const double HitMarkerDuration = 0.15;
 
 	// Settings overlay (instantiated lazily).
-	private PackedScene _settingsScene  = GD.Load<PackedScene>("res://Scenes/UI/SettingsMenu.tscn");
+	private PackedScene _settingsScene;
 	private Control     _settingsInstance;
 
 	// ── State ─────────────────────────────────────────────────────────────────
@@ -61,6 +61,7 @@ public partial class HUD : CanvasLayer
 
 	public override void _Ready()
 	{
+		_settingsScene = GD.Load<PackedScene>("res://Scenes/UI/SettingsMenu.tscn");
 		_healthBar   = GetNode<ProgressBar>("Control/HealthBar");
 		_healthLabel = GetNode<Label>("Control/HealthBar/HealthLabel");
 		_escapePanel = GetNode<Panel>("Control/EscapePanel");
@@ -182,25 +183,29 @@ public partial class HUD : CanvasLayer
 		var control = GetNodeOrNull<Control>("Control");
 		if (control == null) return;
 
-		var shader = ResourceLoader.Load<Shader>("res://Scenes/UI/DamageVignette.gdshader");
-		if (shader == null) return;
+		Callable.From(() => {
+			if (!IsInstanceValid(control)) return;
 
-		_vignetteShader = new ShaderMaterial { Shader = shader };
-		_vignetteShader.SetShaderParameter("intensity", 0f);
+			var shader = ResourceLoader.Load<Shader>("res://Scenes/UI/DamageVignette.gdshader");
+			if (shader == null) return;
 
-		_vignetteRect = new ColorRect
-		{
-			Name        = "DamageVignette",
-			AnchorLeft  = 0f, AnchorTop    = 0f,
-			AnchorRight = 1f, AnchorBottom = 1f,
-			MouseFilter = Control.MouseFilterEnum.Ignore,
-			Color       = new Color(1f, 1f, 1f, 1f), // colour handled by shader
-		};
-		_vignetteRect.Material = _vignetteShader;
+			_vignetteShader = new ShaderMaterial { Shader = shader };
+			_vignetteShader.SetShaderParameter("intensity", 0f);
 
-		// Must be on top of everything — add as last child of Control.
-		control.AddChild(_vignetteRect);
-		control.MoveChild(_vignetteRect, control.GetChildCount() - 1);
+			_vignetteRect = new ColorRect
+			{
+				Name        = "DamageVignette",
+				AnchorLeft  = 0f, AnchorTop    = 0f,
+				AnchorRight = 1f, AnchorBottom = 1f,
+				MouseFilter = Control.MouseFilterEnum.Ignore,
+				Color       = new Color(1f, 1f, 1f, 1f), // colour handled by shader
+			};
+			_vignetteRect.Material = _vignetteShader;
+
+			// Must be on top of everything — add as last child of Control.
+			control.AddChild(_vignetteRect);
+			control.MoveChild(_vignetteRect, control.GetChildCount() - 1);
+		}).CallDeferred();
 	}
 
 	private void FlashVignette()

@@ -41,7 +41,7 @@ public partial class WeaponController : Node
 		_weaponsHolder = new Node3D { Name = "Weapons" };
 		weaponParent.AddChild(_weaponsHolder);
 
-		LoadWeapons();
+		Callable.From(LoadWeapons).CallDeferred();
 	}
 
 	private void LoadWeapons()

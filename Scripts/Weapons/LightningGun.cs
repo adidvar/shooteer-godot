@@ -25,6 +25,54 @@ public partial class LightningGun : WeaponBase
 	private MeshInstance3D _networkMeshInst;
 	private ShaderMaterial _networkMaterial;
 
+	public override void _ExitTree()
+	{
+		// Cleanup dynamic resources to prevent memory leaks
+		if (IsInstanceValid(_beamMesh))
+		{
+			var mat = _beamMesh.MaterialOverride;
+			_beamMesh.MaterialOverride = null;
+			mat?.Dispose();
+			
+			var mesh = _beamMesh.Mesh;
+			_beamMesh.Mesh = null;
+			mesh?.Dispose();
+		}
+
+		if (IsInstanceValid(_networkMeshInst))
+		{
+			var mat = _networkMeshInst.MaterialOverride;
+			_networkMeshInst.MaterialOverride = null;
+			mat?.Dispose();
+			
+			var mesh = _networkMeshInst.Mesh;
+			_networkMeshInst.Mesh = null;
+			mesh?.Dispose();
+		}
+
+		if (IsInstanceValid(_coneParticles))
+		{
+			var mat = _coneParticles.ProcessMaterial;
+			_coneParticles.ProcessMaterial = null;
+			mat?.Dispose();
+			
+			var mesh = _coneParticles.DrawPass1;
+			_coneParticles.DrawPass1 = null;
+			mesh?.Dispose();
+		}
+
+		if (IsInstanceValid(_beamParticles))
+		{
+			var mat = _beamParticles.ProcessMaterial;
+			_beamParticles.ProcessMaterial = null;
+			mat?.Dispose();
+			
+			var mesh = _beamParticles.DrawPass1;
+			_beamParticles.DrawPass1 = null;
+			mesh?.Dispose();
+		}
+	}
+
 	public override void _Ready()
 	{
 		base._Ready();
@@ -42,19 +90,18 @@ public partial class LightningGun : WeaponBase
 		// Setup Beam visual
 		_beamMesh = new MeshInstance3D();
 		_beamMesh.Mesh = new CylinderMesh { TopRadius = 0.05f, BottomRadius = 0.05f, Height = 1f };
-		var beamShader = ResourceLoader.Load<Shader>("res://Scenes/Weapons/LightningBeam.gdshader");
-		if (beamShader != null)
+		_beamMesh.MaterialOverride = new StandardMaterial3D
 		{
-			_beamMesh.MaterialOverride = new ShaderMaterial { Shader = beamShader };
-		}
-		else
-		{
-			_beamMesh.MaterialOverride = new StandardMaterial3D
+			AlbedoColor = new Color(0, 0.8f, 1f), EmissionEnabled = true,
+			Emission = new Color(0, 0.5f, 1f), EmissionEnergyMultiplier = 4f
+		};
+		Callable.From(() => {
+			var beamShader = ResourceLoader.Load<Shader>("res://Scenes/Weapons/LightningBeam.gdshader");
+			if (beamShader != null && IsInstanceValid(_beamMesh))
 			{
-				AlbedoColor = new Color(0, 0.8f, 1f), EmissionEnabled = true,
-				Emission = new Color(0, 0.5f, 1f), EmissionEnergyMultiplier = 4f
-			};
-		}
+				_beamMesh.MaterialOverride = new ShaderMaterial { Shader = beamShader };
+			}
+		}).CallDeferred();
 		_beamMesh.Visible = false;
 		AddChild(_beamMesh);
 
@@ -129,12 +176,15 @@ public partial class LightningGun : WeaponBase
 			CastShadow = GeometryInstance3D.ShadowCastingSetting.Off,
 			Visible    = false,
 		};
-		var netShader = ResourceLoader.Load<Shader>("res://Scenes/Weapons/LightningNetwork.gdshader");
-		if (netShader != null)
-		{
-			_networkMaterial = new ShaderMaterial { Shader = netShader };
-			_networkMeshInst.MaterialOverride = _networkMaterial;
-		}
+		// Try loading shader deferred to avoid RID issues during early init
+		Callable.From(() => {
+			var netShader = ResourceLoader.Load<Shader>("res://Scenes/Weapons/LightningNetwork.gdshader");
+			if (netShader != null && IsInstanceValid(_networkMeshInst))
+			{
+				_networkMaterial = new ShaderMaterial { Shader = netShader };
+				_networkMeshInst.MaterialOverride = _networkMaterial;
+			}
+		}).CallDeferred();
 		AddChild(_networkMeshInst);
 	}
 

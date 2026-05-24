@@ -7,7 +7,7 @@ public partial class MainMenu : Control
 	private Button _joinButton;
 	private AudioStreamPlayer _hoverSound;
 
-	private PackedScene _settingsScene = GD.Load<PackedScene>("res://Scenes/UI/SettingsMenu.tscn");
+	private PackedScene _settingsScene;
 	private Control _settingsInstance;
 
 	[Signal] public delegate void HostRequestedEventHandler();
@@ -15,6 +15,7 @@ public partial class MainMenu : Control
 
 	public override void _Ready()
 	{
+		_settingsScene = GD.Load<PackedScene>("res://Scenes/UI/SettingsMenu.tscn");
 		_ipLineEdit = GetNode<LineEdit>("VBoxContainer/IPLineEdit");
 		_hostButton = GetNode<Button>("VBoxContainer/HostButton");
 		_joinButton = GetNode<Button>("VBoxContainer/JoinButton");

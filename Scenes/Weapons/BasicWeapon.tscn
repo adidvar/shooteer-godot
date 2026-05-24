@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://basicweapon01"]
+[gd_scene format=3]
 
 [ext_resource type="Script" uid="uid://cawbyw02kgw6c" path="res://Scripts/Weapons/BasicWeapon.cs" id="1_bweapon"]
 [ext_resource type="PackedScene" uid="uid://dytexedqjwijw" path="res://Assets/m4-free/source/M4_low.fbx" id="2_m4fbx"]

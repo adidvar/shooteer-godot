@@ -16,13 +16,12 @@ public partial class Bullet : CharacterBody3D
 	private Player _shooter;
 	private bool _hit = false;
 
-	private static PackedScene _impactScene;
+	private PackedScene _impactScene;
 
 	public override void _Ready()
 	{
-		// Cache impact scene (static so it's only loaded once)
-		if (_impactScene == null)
-			_impactScene = GD.Load<PackedScene>(ImpactScenePath);
+		// Cache impact scene
+		_impactScene = GD.Load<PackedScene>(ImpactScenePath);
 
 		// Auto-free after a timeout so stray bullets don't live forever
 		var timer = new Timer { WaitTime = 5.0, OneShot = true, Autostart = true };
