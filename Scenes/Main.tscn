@@ -1,8 +1,8 @@
-[gd_scene format=3 uid="uid://mainscene123"]
+[gd_scene format=3]
 
-[ext_resource type="Script" uid="uid://b7r5515jw852g" path="res://Scripts/Main.cs" id="1_main"]
-[ext_resource type="PackedScene" uid="uid://cxab3x2y" path="res://Scenes/UI/MainMenu.tscn" id="2_menu"]
-[ext_resource type="PackedScene" uid="uid://dxab3x20" path="res://Scenes/UI/HUD.tscn" id="3_hud"]
+[ext_resource type="Script" path="res://Scripts/Main.cs" id="1_main"]
+[ext_resource type="PackedScene" path="res://Scenes/UI/MainMenu.tscn" id="2_menu"]
+[ext_resource type="PackedScene" path="res://Scenes/UI/HUD.tscn" id="3_hud"]
 
 [node name="Main" type="Node" unique_id=1641661847]
 script = ExtResource("1_main")

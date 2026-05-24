@@ -1,36 +1,36 @@
-[gd_scene format=4 uid="uid://map123"]
+[gd_scene format=4]
 
-[ext_resource type="Script" uid="uid://blnllq66qcq1x" path="res://Scripts/Map.cs" id="1_map"]
-[ext_resource type="Texture2D" uid="uid://582i4kprsm1s" path="res://Assets/kenney_prototype-textures/PNG/Dark/texture_01.png" id="2_qumfl"]
-[ext_resource type="Texture2D" uid="uid://s1l5nn24ud15" path="res://Assets/kenney_prototype-textures/PNG/Orange/texture_01.png" id="3_etk83"]
-[ext_resource type="Texture2D" uid="uid://bckkqxluckrlv" path="res://Assets/kenney_prototype-textures/PNG/Orange/texture_02.png" id="4_qumfl"]
+[ext_resource type="Script" path="res://Scripts/Map.cs" id="1_map"]
+[ext_resource type="Texture2D" path="res://Assets/kenney_prototype-textures/PNG/Dark/texture_01.png" id="2_qumfl"]
+[ext_resource type="Texture2D" path="res://Assets/kenney_prototype-textures/PNG/Orange/texture_01.png" id="3_etk83"]
+[ext_resource type="Texture2D" path="res://Assets/kenney_prototype-textures/PNG/Orange/texture_02.png" id="4_qumfl"]
 [ext_resource type="PackedScene" path="res://Scenes/Pickups/HealthPickup.tscn" id="5_hppickup"]
 [ext_resource type="PackedScene" path="res://Scenes/Pickups/AmmoPickup.tscn" id="6_ammopickup"]
 [ext_resource type="PackedScene" path="res://Scenes/Environment/HazardZone.tscn" id="7_hazard"]
 [ext_resource type="PackedScene" path="res://Scenes/Environment/JumpPad.tscn" id="8_jumppad"]
 [ext_resource type="PackedScene" path="res://Scenes/Environment/DestructibleCrate.tscn" id="9_crate"]
-[ext_resource type="Script" uid="uid://cwu5cf7a0awcd" path="res://addons/func_godot/src/map/func_godot_map.gd" id="10_bjq7f"]
-[ext_resource type="Resource" uid="uid://bnvnqol1vx0jh" path="res://trenchbroom/shooter_map_settings.tres" id="11_46meq"]
-[ext_resource type="Texture2D" uid="uid://cyg2snr1w5xw5" path="res://addons/func_godot/textures/default_texture.png" id="12_6bwvt"]
-[ext_resource type="Material" uid="uid://bah68j8ie3gq" path="res://trenchbroom/textures/SBS - Tiny Texture Pack 2 - 128x128/128x128/Plaster/Plaster_05-128x128.tres" id="12_kqqo1"]
-[ext_resource type="Material" uid="uid://sm0yaegq8sj3" path="res://trenchbroom/textures/texture_08.tres" id="13_q4yjo"]
-[ext_resource type="Material" uid="uid://2baydr4domuv" path="res://trenchbroom/textures/SBS - Tiny Texture Pack 2 - 128x128/128x128/Metal/Metal_06-128x128.tres" id="13_wpsl1"]
-[ext_resource type="LightmapGIData" uid="uid://cdsw5kobscjns" path="res://Scenes/VoxelGI/Map.lmbake" id="14_6bwvt"]
-[ext_resource type="Material" uid="uid://b0df0xq0c4b63" path="res://trenchbroom/textures/SBS - Tiny Texture Pack 2 - 128x128/128x128/Plaster/Plaster_01-128x128.tres" id="14_fhpwq"]
-[ext_resource type="Material" uid="uid://bm8ot2fqi7fwg" path="res://trenchbroom/textures/SBS - Tiny Texture Pack 3 - Small/128x128/Grating/Grating_11-128x128.tres" id="15_b5ur4"]
-[ext_resource type="ArrayOccluder3D" uid="uid://d2i5i0ad3nef2" path="res://Scenes/VoxelGI/Map.occ" id="15_q4yjo"]
-[ext_resource type="Material" uid="uid://c434pnpi16cy4" path="res://trenchbroom/textures/SBS - Tiny Texture Pack 3 - Small/128x128/Cloth/Cloth_20-128x128.tres" id="16_bhdqs"]
-[ext_resource type="Material" uid="uid://damj2jphceqcb" path="res://trenchbroom/textures/SBS - Tiny Texture Pack 3 - Small/128x128/Cloth/Cloth_19-128x128.tres" id="17_7kl1s"]
-[ext_resource type="Material" uid="uid://bq16os74lsvix" path="res://trenchbroom/textures/SBS - Tiny Texture Pack 2 - 128x128/128x128/Metal/Metal_11-128x128.tres" id="20_3nddx"]
-[ext_resource type="Material" uid="uid://bxw5y458ds0qm" path="res://trenchbroom/textures/SBS - Tiny Texture Pack 2 - 128x128/128x128/Metal/Metal_17-128x128.tres" id="21_5cwcx"]
-[ext_resource type="Material" uid="uid://dlslfho3t3jb4" path="res://trenchbroom/textures/SBS - Tiny Texture Pack 3 - Small/128x128/Grating/Grating_03-128x128.tres" id="22_y3rqg"]
-[ext_resource type="Material" uid="uid://dfgysfbncuuq7" path="res://trenchbroom/textures/SBS - Tiny Texture Pack 2 - 128x128/128x128/Metal/Metal_05-128x128.tres" id="23_bnu4f"]
-[ext_resource type="Material" uid="uid://wjyhvvvlik2k" path="res://trenchbroom/textures/SBS - Tiny Texture Pack - 128x128/128x128/Bricks/Bricks_23-128x128.tres" id="24_ov5w8"]
-[ext_resource type="Material" uid="uid://dcg3mf50qynas" path="res://trenchbroom/textures/SBS - Tiny Texture Pack 2 - 128x128/128x128/Metal/Metal_14-128x128.tres" id="25_ckgix"]
-[ext_resource type="Material" uid="uid://bvuocuemvtsk0" path="res://trenchbroom/textures/SBS - Tiny Texture Pack 2 - 128x128/128x128/Metal/Metal_08-128x128.tres" id="26_t8u3c"]
-[ext_resource type="Material" uid="uid://dxtvb2e4gmkb0" path="res://trenchbroom/textures/SBS - Tiny Texture Pack 2 - 128x128/128x128/Metal/Metal_12-128x128.tres" id="27_n5cpx"]
-[ext_resource type="Material" uid="uid://ddrkibi5d87a3" path="res://trenchbroom/textures/SBS - Tiny Texture Pack 2 - 128x128/128x128/Metal/Metal_13-128x128.tres" id="28_ai02y"]
-[ext_resource type="Material" uid="uid://baqg8wmnuqrxm" path="res://trenchbroom/textures/SBS - Tiny Texture Pack 2 - 128x128/128x128/Metal/Metal_07-128x128.tres" id="29_pcp55"]
+[ext_resource type="Script" path="res://addons/func_godot/src/map/func_godot_map.gd" id="10_bjq7f"]
+[ext_resource type="Resource" path="res://trenchbroom/shooter_map_settings.tres" id="11_46meq"]
+[ext_resource type="Texture2D" path="res://addons/func_godot/textures/default_texture.png" id="12_6bwvt"]
+[ext_resource type="Material" path="res://trenchbroom/textures/SBS - Tiny Texture Pack 2 - 128x128/128x128/Plaster/Plaster_05-128x128.tres" id="12_kqqo1"]
+[ext_resource type="Material" path="res://trenchbroom/textures/texture_08.tres" id="13_q4yjo"]
+[ext_resource type="Material" path="res://trenchbroom/textures/SBS - Tiny Texture Pack 2 - 128x128/128x128/Metal/Metal_06-128x128.tres" id="13_wpsl1"]
+[ext_resource type="LightmapGIData" path="res://Scenes/VoxelGI/Map.lmbake" id="14_6bwvt"]
+[ext_resource type="Material" path="res://trenchbroom/textures/SBS - Tiny Texture Pack 2 - 128x128/128x128/Plaster/Plaster_01-128x128.tres" id="14_fhpwq"]
+[ext_resource type="Material" path="res://trenchbroom/textures/SBS - Tiny Texture Pack 3 - Small/128x128/Grating/Grating_11-128x128.tres" id="15_b5ur4"]
+[ext_resource type="ArrayOccluder3D" path="res://Scenes/VoxelGI/Map.occ" id="15_q4yjo"]
+[ext_resource type="Material" path="res://trenchbroom/textures/SBS - Tiny Texture Pack 3 - Small/128x128/Cloth/Cloth_20-128x128.tres" id="16_bhdqs"]
+[ext_resource type="Material" path="res://trenchbroom/textures/SBS - Tiny Texture Pack 3 - Small/128x128/Cloth/Cloth_19-128x128.tres" id="17_7kl1s"]
+[ext_resource type="Material" path="res://trenchbroom/textures/SBS - Tiny Texture Pack 2 - 128x128/128x128/Metal/Metal_11-128x128.tres" id="20_3nddx"]
+[ext_resource type="Material" path="res://trenchbroom/textures/SBS - Tiny Texture Pack 2 - 128x128/128x128/Metal/Metal_17-128x128.tres" id="21_5cwcx"]
+[ext_resource type="Material" path="res://trenchbroom/textures/SBS - Tiny Texture Pack 3 - Small/128x128/Grating/Grating_03-128x128.tres" id="22_y3rqg"]
+[ext_resource type="Material" path="res://trenchbroom/textures/SBS - Tiny Texture Pack 2 - 128x128/128x128/Metal/Metal_05-128x128.tres" id="23_bnu4f"]
+[ext_resource type="Material" path="res://trenchbroom/textures/SBS - Tiny Texture Pack - 128x128/128x128/Bricks/Bricks_23-128x128.tres" id="24_ov5w8"]
+[ext_resource type="Material" path="res://trenchbroom/textures/SBS - Tiny Texture Pack 2 - 128x128/128x128/Metal/Metal_14-128x128.tres" id="25_ckgix"]
+[ext_resource type="Material" path="res://trenchbroom/textures/SBS - Tiny Texture Pack 2 - 128x128/128x128/Metal/Metal_08-128x128.tres" id="26_t8u3c"]
+[ext_resource type="Material" path="res://trenchbroom/textures/SBS - Tiny Texture Pack 2 - 128x128/128x128/Metal/Metal_12-128x128.tres" id="27_n5cpx"]
+[ext_resource type="Material" path="res://trenchbroom/textures/SBS - Tiny Texture Pack 2 - 128x128/128x128/Metal/Metal_13-128x128.tres" id="28_ai02y"]
+[ext_resource type="Material" path="res://trenchbroom/textures/SBS - Tiny Texture Pack 2 - 128x128/128x128/Metal/Metal_07-128x128.tres" id="29_pcp55"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r08cw"]
 albedo_texture = ExtResource("2_qumfl")
@@ -1421,7 +1421,7 @@ omni_range = 11.545774
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1, 2)
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="." unique_id=812474291]
-_spawnable_scenes = PackedStringArray("uid://player123")
+_spawnable_scenes = PackedStringArray("res://Scenes/Player.tscn")
 spawn_path = NodePath("../Players")
 spawn_limit = 10
 
@@ -1532,10 +1532,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.954088, 5.043174, -1.26455
 [node name="FuncGodotMap" type="Node3D" parent="." unique_id=1979694085]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.532789, -1.3750153)
 script = ExtResource("10_bjq7f")
-local_map_file = "uid://deqqty3tjsmwa"
+local_map_file = "res://trenchbroom/maps/shooter.map"
 map_settings = ExtResource("11_46meq")
 build_flags = 1
-metadata/_custom_type_script = "uid://cwu5cf7a0awcd"
+metadata/_custom_type_script = "res://addons/func_godot/src/map/func_godot_map.gd"
 
 [node name="entity_0_worldspawn" type="StaticBody3D" parent="FuncGodotMap" unique_id=1208647740]
 collision_mask = 0
@@ -2401,6 +2401,7 @@ shape = SubResource("ConvexPolygonShape3D_q7isl")
 [node name="SceneLight" type="Node" parent="." unique_id=750041925]
 
 [node name="LightmapGI" type="LightmapGI" parent="." unique_id=793326269]
+visible = false
 directional = true
 interior = true
 generate_probes_subdiv = 4
