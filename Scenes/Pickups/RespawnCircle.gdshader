@@ -20,21 +20,21 @@ void fragment() {
 	vec2 uv = UV * 2.0 - 1.0;
 	float r = length(uv);
 
-	// Discard outside the ring band completely.
+	// Outside the ring band — fully transparent.
+	// NOTE: no early `return;` — Metal backend rejects it inside fragment().
 	if (r < inner_r || r > outer_r) {
 		ALPHA = 0.0;
-		return;
-	}
-
-	// Angle: 0 at top, clockwise (matching a typical loading indicator).
-	// atan(x, -y) gives angle from +Y axis.
-	float angle = atan(uv.x, -uv.y) / (2.0 * 3.14159265358979) + 0.5;
-
-	if (angle <= progress) {
-		ALBEDO = fill_color.rgb;
-		ALPHA  = fill_color.a;
 	} else {
-		ALBEDO = bg_color.rgb;
-		ALPHA  = bg_color.a;
+		// Angle: 0 at top, clockwise (matching a typical loading indicator).
+		// atan(x, -y) gives angle from +Y axis.
+		float angle = atan(uv.x, -uv.y) / (2.0 * 3.14159265358979) + 0.5;
+
+		if (angle <= progress) {
+			ALBEDO = fill_color.rgb;
+			ALPHA  = fill_color.a;
+		} else {
+			ALBEDO = bg_color.rgb;
+			ALPHA  = bg_color.a;
+		}
 	}
 }
