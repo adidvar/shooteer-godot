@@ -125,4 +125,27 @@ public partial class WeaponController : Node
 			EmitSignal(SignalName.AmmoChanged, _activeWeapon.CurrentAmmo, _activeWeapon.MaxAmmo);
 		}
 	}
+
+	// ── Save/Load helpers ─────────────────────────────────────────────────────
+
+	/// <summary>Returns current ammo for every weapon slot in order.</summary>
+	public int[] GetAmmoData()
+	{
+		if (_weaponsHolder == null) return System.Array.Empty<int>();
+		var children = _weaponsHolder.GetChildren();
+		var result   = new int[children.Count];
+		for (int i = 0; i < children.Count; i++)
+			result[i] = children[i] is WeaponBase wb ? wb.CurrentAmmo : 0;
+		return result;
+	}
+
+	/// <summary>Restore per-weapon ammo from a saved int array.</summary>
+	public void RestoreAmmoData(int[] ammoData)
+	{
+		if (_weaponsHolder == null || ammoData == null) return;
+		var children = _weaponsHolder.GetChildren();
+		for (int i = 0; i < children.Count && i < ammoData.Length; i++)
+			if (children[i] is WeaponBase wb)
+				wb.SetAmmo(ammoData[i]);
+	}
 }

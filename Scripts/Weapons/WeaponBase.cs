@@ -47,6 +47,13 @@ public abstract partial class WeaponBase : Node3D
 		return true;
 	}
 
+	/// <summary>Directly set ammo (used when restoring a save). Clamped to [0, MaxAmmo].</summary>
+	public void SetAmmo(int amount)
+	{
+		CurrentAmmo = Mathf.Clamp(amount, 0, MaxAmmo);
+		EmitSignal(SignalName.AmmoChanged, CurrentAmmo, MaxAmmo);
+	}
+
 	/// <summary>
 	/// Tries to consume <paramref name="count"/> ammo. Returns false (and fires nothing)
 	/// if there is not enough ammo.

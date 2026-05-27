@@ -44,6 +44,9 @@ public partial class HUD : CanvasLayer
 	private PackedScene _settingsScene  = GD.Load<PackedScene>("res://Scenes/UI/SettingsMenu.tscn");
 	private Control     _settingsInstance;
 
+	// Save/Load overlay (built in code, no .tscn needed).
+	private SaveLoadMenu _saveLoadMenu;
+
 	// ── State ─────────────────────────────────────────────────────────────────
 	private int _maxHealth     = 100;
 	private int _currentHealth = 100;
@@ -77,6 +80,29 @@ public partial class HUD : CanvasLayer
 		ApplyGradientHealthBar();
 		ApplyWeaponPanelStyle();
 		UpdateHealthDisplay();
+		BuildSaveLoadButton();
+	}
+
+	/// <summary>
+	/// Adds a "Save / Load" button to the escape panel programmatically.
+	/// Works regardless of how the scene's VBoxContainer is ordered.
+	/// </summary>
+	private void BuildSaveLoadButton()
+	{
+		if (_escapePanel == null) return;
+
+		// Find the VBoxContainer inside the escape panel (if any), or use the panel directly.
+		var vbox = _escapePanel.GetNodeOrNull<VBoxContainer>("VBoxContainer")
+				?? _escapePanel.GetNodeOrNull<VBoxContainer>("VBox");
+
+		Control parent = (Control)vbox ?? _escapePanel;
+
+		var btn = new Button { Text = "💾  Save / Load Game", Name = "SaveLoadButton" };
+		btn.Pressed += OnSaveLoadPressed;
+		// Insert before the last button (typically "Exit") so order is natural.
+		parent.AddChild(btn);
+		if (vbox != null)
+			parent.MoveChild(btn, Mathf.Max(0, parent.GetChildCount() - 2));
 	}
 
 	// ── Ghost HP bar (created in code, no .tscn edit needed) ─────────────────
@@ -631,6 +657,17 @@ public partial class HUD : CanvasLayer
 			_escapePanel?.AddChild(_settingsInstance);
 		}
 		_settingsInstance.Show();
+	}
+
+	public void OnSaveLoadPressed()
+	{
+		if (_saveLoadMenu == null)
+		{
+			_saveLoadMenu = new SaveLoadMenu { Name = "SaveLoadMenu" };
+			AddChild(_saveLoadMenu);
+		}
+		_saveLoadMenu.RefreshSlots();
+		_saveLoadMenu.Show();
 	}
 
 	public void OnMainMenuPressed()

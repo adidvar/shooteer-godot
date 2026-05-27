@@ -6,7 +6,10 @@ public partial class GlobalSettings : Node
 	public static GlobalSettings Instance { get; private set; }
 
 	public float MouseSensitivity { get; set; } = 0.002f;
-	public bool IsSoundEnabled { get; set; } = true;
+	public bool  IsSoundEnabled   { get; set; } = true;
+
+	/// <summary>Index into <see cref="SaveManager.AllSystems"/> (0=A,1=B,2=C).</summary>
+	public int SaveSystemIndex { get; set; } = 0;
 
 	[Export]
 	public Godot.Collections.Array<WeaponStats> WeaponStatsList { get; set; } = new();
