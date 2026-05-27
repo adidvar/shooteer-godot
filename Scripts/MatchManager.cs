@@ -145,6 +145,13 @@ public partial class MatchManager : Node
 			}
 
 			Rpc(MethodName.ClientMatchEnded, winnerPeerId, maxFrags, (int)RestartDelay);
+
+			// Auto-save career stats at match end.
+			int myId    = Multiplayer.GetUniqueId();
+			_frags.TryGetValue(myId, out int myFrags);
+			var career  = SaveManager.Instance?.ActiveSystem.Load(SaveManager.SettingsSlot);
+			bool isBest = career == null || myFrags > career.BestFrags;
+			SaveManager.Instance?.AutoSaveMatchEnd(myFrags, isBest);
 		}
 	}
 
@@ -195,4 +202,37 @@ public partial class MatchManager : Node
 	// ── Helper ────────────────────────────────────────────────────────────────
 
 	private HUD GetHud() => GetNodeOrNull<HUD>("/root/Main/HUD");
+
+	// ── Save / Load integration ───────────────────────────────────────────────
+
+	/// <summary>Returns a lightweight snapshot of current match state for serialisation.</summary>
+	public (float timeRemaining, bool matchActive, System.Collections.Generic.Dictionary<string, int> fragCounts)
+		GetSaveSnapshot()
+	{
+		var fragMap = new System.Collections.Generic.Dictionary<string, int>();
+		foreach (var kv in _frags)
+			fragMap[kv.Key.ToString()] = kv.Value;
+		return (_timeRemaining, _matchActive, fragMap);
+	}
+
+	/// <summary>
+	/// Restore match state from a <see cref="SaveData"/> snapshot.
+	/// Only valid on the server; clients receive synced state via RPCs as usual.
+	/// </summary>
+	public void RestoreFromSave(SaveData data)
+	{
+		if (!Multiplayer.IsServer()) return;
+
+		_timeRemaining = data.TimeRemaining;
+		_matchActive   = data.MatchActive;
+		_frags.Clear();
+		foreach (var kv in data.FragCounts)
+			if (int.TryParse(kv.Key, out int peerId))
+				_frags[peerId] = kv.Value;
+
+		// Sync restored timer and frags to all clients.
+		Rpc(MethodName.ClientTimerSync, _timeRemaining);
+		foreach (var kv in _frags)
+			Rpc(MethodName.ClientFragUpdate, kv.Key, kv.Value);
+	}
 }

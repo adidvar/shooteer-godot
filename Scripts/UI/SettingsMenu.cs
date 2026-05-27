@@ -11,6 +11,9 @@ public partial class SettingsMenu : Control
 	private CheckButton _soundToggle;
 	private AudioStreamPlayer _hoverSound;
 
+	// Save-system selector (added programmatically so no .tscn change is needed).
+	private OptionButton _saveSystemOption;
+
 	public override void _Ready()
 	{
 		_sensSlider  = GetNodeOrNull<HSlider>("CenterContainer/VBoxContainer/SensSlider");
@@ -30,6 +33,32 @@ public partial class SettingsMenu : Control
 		}
 
 		UpdateSensLabel();
+		BuildSaveSystemSelector();
+	}
+
+	// ── Save-system selector ──────────────────────────────────────────────────
+
+	private void BuildSaveSystemSelector()
+	{
+		var vbox = GetNodeOrNull<VBoxContainer>("CenterContainer/VBoxContainer");
+		if (vbox == null) return;
+
+		// Label
+		var label = new Label { Text = "Save System:" };
+		vbox.AddChild(label);
+
+		// OptionButton
+		_saveSystemOption = new OptionButton();
+		foreach (var sys in SaveManager.AllSystems)
+			_saveSystemOption.AddItem($"{sys.SystemName}  —  {sys.SystemDescription}");
+		_saveSystemOption.Selected = GlobalSettings.Instance?.SaveSystemIndex ?? 0;
+		_saveSystemOption.ItemSelected += OnSaveSystemSelected;
+		vbox.AddChild(_saveSystemOption);
+	}
+
+	private void OnSaveSystemSelected(long index)
+	{
+		SaveManager.Instance?.SetSaveSystem((int)index);
 	}
 
 	// ── Callbacks (wired in SettingsMenu.tscn) ────────────────────────────────
@@ -39,6 +68,7 @@ public partial class SettingsMenu : Control
 		if (GlobalSettings.Instance != null)
 			GlobalSettings.Instance.MouseSensitivity = value;
 		UpdateSensLabel();
+		SaveManager.Instance?.SaveSettings();
 	}
 
 	public void OnSoundToggled(bool enabled)
@@ -46,6 +76,7 @@ public partial class SettingsMenu : Control
 		if (GlobalSettings.Instance == null) return;
 		GlobalSettings.Instance.IsSoundEnabled = enabled;
 		GlobalSettings.Instance.ApplySoundSettings();
+		SaveManager.Instance?.SaveSettings();
 	}
 
 	public void OnBackPressed() => Hide();
